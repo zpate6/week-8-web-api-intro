@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 
+const API_KEY = "0d9c325bf59386b367e71721fc0e5b8a";
+
 export default function WeatherApp() {
   const [city, setCity] = useState("San Francisco");
   const [searchInput, setSearchInput] = useState("");
@@ -9,7 +11,22 @@ export default function WeatherApp() {
   const [error, setError] = useState("");
 
   const fetchWeather = async (cityName: string) => {
-    
+    try{
+
+      setError("");
+      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`);
+      const data = await response.json();
+
+      if (!response.ok){
+        throw new Error(data.message || "City not found or API error.");
+      }
+
+      setWeather(data);
+
+    }catch (err: any){
+      setError(err.message);
+      setWeather(null);
+    }
   };
 
   useEffect(() => {
